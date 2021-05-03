@@ -1,0 +1,42 @@
+server:
+  servlet:
+    context-path: /example
+  tomcat:
+    accesslog:
+      enabled: false
+      directory: stdout
+      suffix:
+      prefix:
+      file-date-format:
+    basedir: /dev
+
+spring:
+  main:
+    banner-mode: "off"
+  data:
+    mongodb:
+      #uri: mongodb://root:test@localhost:27017/test?authSource=admin&appname=hoge&ssl=false
+      host: mongo
+      port: 27017
+      database: mydb
+      username: root
+      password: test
+      repositories:
+        enabled: true
+      authentication-database: admin
+
+cloud:
+  aws:
+    credentials:
+      profileName:
+      accessKey: xxx
+      secretKey: xxx
+      instanceProfile: false
+      useDefaultAwsCredentialsChain: true
+    region: us-west-2
+
+app:
+  messaging:
+    endpoint: http://elasticmq:9324
+    wait-time-seconds: 20
+    order-queue-name: order

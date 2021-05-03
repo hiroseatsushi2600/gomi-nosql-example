@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - AWS_ACCOUNT_ID=525036870923
+      - GIT_REPOSITORY=customer-qa-agreement-api
+      - COMMIT_ID=${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+      - DOCKER_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${GIT_REPOSITORY}
+  build:
+    commands:
+      - docker build -t customer-qa-agreement-api .
+      - docker tag customer-qa-agreement-api:latest ${DOCKER_REGISTRY}:latest
+      - docker tag customer-qa-agreement-api:latest ${DOCKER_REGISTRY}:${COMMIT_ID}
+  post_build:
+    commands:
+      - docker push ${DOCKER_REGISTRY}:latest
+      - docker push ${DOCKER_REGISTRY}:${COMMIT_ID}
+      - printf '[{"name":"%s","imageUri":"%s"}]' ${GIT_REPOSITORY} ${DOCKER_REGISTRY}:${COMMIT_ID} > imagedefinitions.json
+artifacts:
+  files:
+    - imagedefinitions.json

@@ -1,0 +1,7 @@
+Dockerfile*
+.git
+README*
+*.swp
+log/*
+build/*
+iac
